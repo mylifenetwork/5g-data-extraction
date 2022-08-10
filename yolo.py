@@ -5,10 +5,14 @@ Class definition of YOLO_v3 style detection model on image and video
 
 import colorsys
 import os
+from re import S
 from timeit import default_timer as timer
 
 import numpy as np
 from keras import backend as K
+# import tensorflow.compat.v1.keras.backend as K
+import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
 from keras.models import load_model
 from keras.layers import Input
 from PIL import Image, ImageFont, ImageDraw
@@ -16,7 +20,6 @@ from PIL import Image, ImageFont, ImageDraw
 from yolo3.model import yolo_eval, yolo_body, tiny_yolo_body
 from yolo3.utils import letterbox_image
 import os
-from keras.utils import multi_gpu_model
 
 class YOLO(object):
     _defaults = {
@@ -95,8 +98,8 @@ class YOLO(object):
 
         # Generate output tensor targets for filtered bounding boxes.
         self.input_image_shape = K.placeholder(shape=(2, ))
-        if self.gpu_num>=2:
-            self.yolo_model = multi_gpu_model(self.yolo_model, gpus=self.gpu_num)
+        # if self.gpu_num>=2:
+        #     self.yolo_model = multi_gpu_model(self.yolo_model, gpus=self.gpu_num)
         boxes, scores, classes = yolo_eval(self.yolo_model.output, self.anchors,
                 len(self.class_names), self.input_image_shape,
                 score_threshold=self.score, iou_threshold=self.iou)
@@ -130,8 +133,9 @@ class YOLO(object):
 
         print('Found {} boxes for {}'.format(len(out_boxes), 'img'))
 
-        font = ImageFont.truetype(font='arial.ttf',
+        font = ImageFont.truetype(font='./arial.ttf',
                     size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
+        # font = ImageFont.load_default()
 
         #If the above font does not work for you please uncomment the following line
         # font = ImageFont.load_default()
@@ -144,6 +148,8 @@ class YOLO(object):
         max_right = 0
         max_top = 0
         max_bottom = 0
+        max_score = 1
+        height = 0.1
         id = 0
         for i, c in reversed(list(enumerate(out_classes))):
             predicted_class = self.class_names[c]
@@ -185,14 +191,20 @@ class YOLO(object):
         # if max_area != 0:
         ##using car_original_width
         car_original_width = 72 # in inch
-        car_original_height = 60 # in inch
-        f = 250 # focal length
+        car_original_height = 68 # in inch
+        f = 800 # focal length
         # d = (car_original_width * f)/ width
         d = (car_original_height * f)/ height
-        d = d/12
+        d = d / 39370.1 # in km
+        s = 50 # in km/h
+        t = d/s * 3600 # in seconds
+        # limit is set at 2 now
+        print('t=', t)
+        if t < 2:
+            print("DANGER ALERT!")
         distance = 'd='
-        unit = 'ft'
-        text = '{} {:.2f} {}'.format(distance, d, unit)
+        unit = 'm'
+        text = '{} {:.2f} {}'.format(distance, d*1000, unit)
         x, y = (max_left + id + 10, max_top + id - 25)
         # text = 'hello'
         w, h = font.getsize(text)
@@ -212,7 +224,7 @@ class YOLO(object):
 
 
 
-def detect_video(yolo, video_path, output_path=""):
+def detect_video(yolo, video_path, output_path="./output"):
     import cv2
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():

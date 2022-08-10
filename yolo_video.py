@@ -5,8 +5,8 @@ from timeit import default_timer as timer
 from yolo import YOLO, detect_video
 from PIL import Image
 
-test_dir = "../Dir" # Here put your directory of images which needs to be detected
-save_dir ="../saved_result/" # Here put your directory where you want to save the images
+test_dir = "./video" # Here put your directory of images which needs to be detected
+save_dir ="./saved_result/" # Here put your directory where you want to save the images
 testfiles= os.listdir(test_dir)
 
 def detect_img(yolo):
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     Command line positional arguments -- for video detection mode
     '''
     parser.add_argument(
-        "--input", nargs='?', type=str,required=False,default='./path2your_video/',
+        "--input", nargs='?', type=str,required=False,default='./video/',
         help = "Video input path"
     )
 
