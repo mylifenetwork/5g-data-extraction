@@ -1,3 +1,14 @@
+## Citation
+link to repo: https://github.com/monjurulkarim/vehicle_distance
+~~~~
+@article{karim2021system,
+  title={A system of vision sensor based deep neural networks for complex driving scene analysis in support of crash risk assessment and prevention},
+  author={Karim, Muhammad Monjurul and Li, Yu and Qin, Ruwen and Yin, Zhaozheng},
+  journal={arXiv preprint arXiv:2106.10319},
+  year={2021}
+}
+~~~~
+
 # Measuring the distance to the nearest vehicle
 For developing advanced driving assistance systems (ADAS) it is required to detect the distance to the nearest vehicle from the user vehicle using the vehicle mounted camera. This repository contains the code for estimating the distance to the nearest vehicle using the principle of similar triangles. For detecting objects Yolo v3 has been used.
 
@@ -16,16 +27,4 @@ For object detection Yolo v3 has been used. The code for Yolo V3 has been taken 
 On your terminal at the same directory type the following:
 ~~~~
 python yolo_video.py --image
-~~~~
-
-## Citation
-If you use this repository, please cite the following paper:
-
-~~~~
-@article{karim2021system,
-  title={A system of vision sensor based deep neural networks for complex driving scene analysis in support of crash risk assessment and prevention},
-  author={Karim, Muhammad Monjurul and Li, Yu and Qin, Ruwen and Yin, Zhaozheng},
-  journal={arXiv preprint arXiv:2106.10319},
-  year={2021}
-}
 ~~~~
