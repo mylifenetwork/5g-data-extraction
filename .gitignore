@@ -1,3 +1,4 @@
 *.mp4
 yolo_weight.h5
-venv/
+venv
+log.txt
