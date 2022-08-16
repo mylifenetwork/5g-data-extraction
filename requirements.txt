@@ -1,0 +1,4 @@
+opencv-python==4.6.0
+matplotlib==3.5.3
+pandas==1.4.3
+moviepy==1.0.3
